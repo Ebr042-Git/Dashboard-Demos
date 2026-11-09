@@ -2,7 +2,7 @@
 
 Three business dashboards you can click through, built with plain HTML, CSS and JavaScript.
 
-**Try it now:** https://YOUR-USERNAME.github.io/Dashboard-Demos/
+**Try it now:** https://ebr042-git.github.io/Dashboard-Demos/
 
 All data is made up. The names, products and numbers are invented, and no real company data is used.
 
