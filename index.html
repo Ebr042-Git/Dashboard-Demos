@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Demos (synthetic data)</title>
+<style>
+:root{--bg:#F3F5FA;--card:#fff;--edge:#E1E6F0;--text:#12203D;--muted:#667189;--navy:#071A44;--a1:#0B3FAE;--good:#1F8A5B;--bad:#C62D4A;--amber:#B98200;--tint:#EEF3FC;--goodbg:#E6F4EC;--selbg:#D5EEE0}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:14px;line-height:1.4}
+header{background:var(--navy);color:#fff;padding:14px 24px 0}
+header h1{margin:0;font-size:18px;font-weight:600;letter-spacing:.2px}
+header p{margin:2px 0 10px;color:#A9B7DA;font-size:12.5px}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;border:0;color:#C9D4F0;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;border-radius:8px 8px 0 0}
+nav button.on{background:var(--bg);color:var(--navy)}
+nav button:focus-visible,.pill:focus-visible,button:focus-visible{outline:2px solid #6D9BFF;outline-offset:1px}
+.note{background:#FFF8E1;border-bottom:1px solid #F0DFA6;color:#5E4B00;padding:8px 24px;font-size:12.5px}
+main{max-width:1280px;margin:0 auto;padding:20px 24px 40px}
+.grid{display:grid;gap:16px}
+.k5{grid-template-columns:repeat(5,1fr)}.k4{grid-template-columns:repeat(4,1fr)}.k3{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr 1fr}
+@media(max-width:900px){.k5,.k4,.k3,.two{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.k5,.k4,.k3,.two{grid-template-columns:1fr}main{padding:14px 12px 30px}}
+.card{background:var(--card);border:1px solid var(--edge);border-top:3px solid var(--a1);border-radius:12px;padding:16px;min-width:0}
+.card.good{border-top-color:var(--good)}
+.card h3{margin:0 0 2px;font-size:15px}
+.sub{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.kpi .lbl{color:var(--muted);font-size:12.5px}
+.kpi .val{font-size:26px;font-weight:700;margin-top:4px;color:var(--a1);font-variant-numeric:tabular-nums}
+.kpi .val.g{color:var(--good)}.kpi .val.b{color:var(--bad)}
+.kpi .hint{color:var(--muted);font-size:12px;margin-top:2px}
+.bar-row{display:grid;grid-template-columns:22px minmax(90px,200px) 1fr 70px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.bar-row .rk{color:var(--muted);text-align:right}
+.track{height:8px;background:#EDF0F7;border-radius:6px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,#1F5FE0,#6F4FD8);border-radius:6px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.pill{border:1px solid var(--edge);background:#fff;color:var(--a1);font:inherit;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer}
+.pill.on{background:var(--a1);color:#fff;border-color:var(--a1)}
+.pill.sm{font-size:12px;padding:5px 10px;font-weight:500}
+.btn{border:0;background:var(--a1);color:#fff;font:inherit;font-weight:600;padding:8px 16px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--a1);border:1px solid var(--edge)}
+.btn.go{background:var(--good)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+select,input[type=date],input[type=text]{font:inherit;border:1px solid var(--edge);border-radius:8px;padding:7px 10px;background:#fff;color:var(--text)}
+table{width:100%;border-collapse:collapse}
+th{background:var(--tint);color:var(--muted);font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;text-align:left;padding:9px 10px;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--edge);vertical-align:middle}
+.scroll{overflow-x:auto}
+tr.grp td{background:var(--tint);font-weight:600}
+tr.q{cursor:pointer}
+tr.q:hover td{background:#F7FAFF}
+tr.q.best td{background:var(--goodbg)}
+tr.q.sel td{background:var(--selbg)}
+tr.q.sel td:first-child,tr.q.best td:first-child{box-shadow:inset 3px 0 0 var(--good)}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:2px 8px;border-radius:999px;color:#fff;margin-left:6px}
+.tag.best{background:var(--good)}.tag.sel{background:var(--a1)}.tag.nb{background:#FFF1CC;color:var(--amber)}
+.tag.draft{background:var(--amber)}.tag.ok{background:var(--good)}
+.mut{color:var(--muted)}.neg{color:var(--bad)}.pos{color:var(--good);font-weight:600}
+.small{font-size:12px}
+.badge{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:var(--a1);color:#fff;font-weight:700;font-size:12px;margin-right:8px}
+.remark{width:100%;max-width:420px}
+.msg{padding:10px 12px;border-radius:8px;background:var(--tint);margin:10px 0;font-size:13px}
+.msg.warn{background:#FFF6E0}.msg.ok{background:var(--goodbg)}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.tt{position:fixed;pointer-events:none;background:var(--navy);color:#fff;padding:6px 9px;border-radius:6px;font-size:12px;z-index:9;display:none;white-space:nowrap}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;margin-top:8px}
+.legend button{border:0;background:none;font:inherit;cursor:pointer;display:flex;gap:6px;align-items:center;color:var(--text);padding:2px 0}
+.legend button.off{opacity:.35}
+.sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+.exp{border:1px solid var(--edge);background:#fff;border-radius:6px;width:24px;height:24px;cursor:pointer;color:var(--a1)}
+.link{color:var(--a1);background:none;border:0;font:inherit;cursor:pointer;text-decoration:underline;padding:0}
+.row2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack>*+*{margin-top:16px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Dashboard Demos</h1>
+  <p>Three working dashboards rebuilt on synthetic data. Click, filter and drill down.</p>
+  <nav id="tabs" role="tablist">
+    <button role="tab" data-t="s2s" class="on">Supplier Comparison</button>
+    <button role="tab" data-t="sales">Sales Overview</button>
+    <button role="tab" data-t="stats">Trading Statistics</button>
+  </nav>
+</header>
+<div class="note">Demo only. All names, products and figures are invented. Rebuilt to show design and logic, not real company data.</div>
+<main id="app"></main>
+<div class="tt" id="tt"></div>
+<footer>Built with plain HTML, CSS and JavaScript. No internet needed.</footer>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const fmt2=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const M=n=>(n/1e6).toFixed(1)+'M';
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const tt=$('#tt');
+function tip(el,html){el.addEventListener('mousemove',e=>{tt.innerHTML=html;tt.style.display='block';tt.style.left=(e.clientX+12)+'px';tt.style.top=(e.clientY+12)+'px'});el.addEventListener('mouseleave',()=>tt.style.display='none')}
+function download(name,rows){const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=name;a.click()}
+
+/* ================= 1. SUPPLIER COMPARISON ================= */
+const MRS={
+ 'MR-2041':{date:'2026-10-08',items:[
+  {id:1,name:'Excavator with operator, monthly hire',code:'4101',qty:1,quotes:[
+   {s:'Alpha Plant Hire',code:'S1001',terms:'30 Days',rate:21500},
+   {s:'Beacon Equipment',code:'S1002',terms:'30 Days',rate:26800},
+   {s:'Crest Machinery',code:'S1003',terms:'30 Days PDC',rate:31400},
+   {s:'Delta Site Services',code:'S1004',terms:'-',rate:19200}]},
+  {id:2,name:'Equipment transport, per move',code:'4102',qty:2,quotes:[
+   {s:'Beacon Equipment',code:'S1002',terms:'30 Days',rate:900},
+   {s:'Alpha Plant Hire',code:'S1001',terms:'30 Days',rate:900},
+   {s:'Crest Machinery',code:'S1003',terms:'30 Days PDC',rate:1500}]}]},
+ 'MR-2042':{date:'2026-10-21',items:[
+  {id:1,name:'Generator 250kVA, monthly hire',code:'4201',qty:2,quotes:[
+   {s:'Alpha Plant Hire',code:'S1001',terms:'45 Days',rate:7200},
+   {s:'Delta Site Services',code:'S1004',terms:'30 Days',rate:6900},
+   {s:'Crest Machinery',code:'S1003',terms:'30 Days PDC',rate:8100}]},
+  {id:2,name:'Water tanker, daily hire',code:'4202',qty:10,quotes:[
+   {s:'Beacon Equipment',code:'S1002',terms:'30 Days',rate:310},
+   {s:'Delta Site Services',code:'S1004',terms:'30 Days',rate:285},
+   {s:'Alpha Plant Hire',code:'S1001',terms:'45 Days',rate:335}]},
+  {id:3,name:'Demobilisation charge',code:'4203',qty:1,quotes:[
+   {s:'Crest Machinery',code:'S1003',terms:'30 Days PDC',rate:3000},
+   {s:'Alpha Plant Hire',code:'S1001',terms:'30 Days',rate:1800},
+   {s:'Beacon Equipment',code:'S1002',terms:'30 Days',rate:1800}]}]}
+};
+const S2S={mr:'MR-2041',sel:{},rem:{},po:null,sub:'cmp'};
+function s2sInit(mr){
+  const m=MRS[mr];m.items.forEach(it=>{it.quotes.sort((a,b)=>a.rate-b.rate)});
+  if(!S2S.sel[mr]){S2S.sel[mr]={};S2S.rem[mr]={};
+    // demo start: item 1 picked at a higher rate, so the remark rule is visible
+    m.items.forEach((it,i)=>S2S.sel[mr][it.id]=(i===0&&it.quotes.length>2)?1:0)}
+}
+function s2sCalc(mr){
+  const m=MRS[mr],sel=S2S.sel[mr],rem=S2S.rem[mr];let best=0,high=0,chosen=0,missing=0,selected=0;
+  const sup={};
+  m.items.forEach(it=>{
+    const q=it.quotes,b=q[0].rate,h=q[q.length-1].rate,c=q[sel[it.id]];
+    best+=b*it.qty;high+=h*it.qty;chosen+=c.rate*it.qty;selected++;
+    if(c.rate>b&&!(rem[it.id]||'').trim())missing++;
+    q.forEach(x=>{sup[x.s]=sup[x.s]||{n:0,t:0};sup[x.s].n++;sup[x.s].t+=x.rate*it.qty})});
+  return{best,high,chosen,missing,selected,n:m.items.length,sup,suppliers:new Set(m.items.flatMap(i=>i.quotes.map(q=>q.s))).size}
+}
+function renderS2S(){
+  const mr=S2S.mr;s2sInit(mr);const m=MRS[mr],c=s2sCalc(mr),sel=S2S.sel[mr],rem=S2S.rem[mr];
+  const ready=c.missing===0,status=S2S.po?'PO CREATED':'DRAFT';
+  let h=`<div class="stack">
+  <div class="card"><div class="hdr"><div>
+   <div class="row2"><select id="mrSel" aria-label="Material request">${Object.keys(MRS).map(k=>`<option ${k===mr?'selected':''}>${k}</option>`).join('')}</select>
+   <span class="mut small">Material request date ${m.date}</span></div></div>
+   <div><span class="tag ${S2S.po?'ok':'draft'}" style="margin:0">${status}</span></div></div></div>
+  <div class="grid k5">
+   <div class="card kpi"><div class="lbl">Items / suppliers</div><div class="val">${c.n} / ${c.suppliers}</div></div>
+   <div class="card kpi good"><div class="lbl">Best price total</div><div class="val g">${fmt2(c.best)}</div></div>
+   <div class="card kpi good"><div class="lbl">Saving vs highest</div><div class="val g">${fmt2(c.high-c.best)}</div></div>
+   <div class="card kpi"><div class="lbl">Selected total</div><div class="val">${fmt2(c.chosen)}</div><div class="hint">${c.chosen>c.best?fmt2(c.chosen-c.best)+' above best price':'At best price'}</div></div>
+   <div class="card kpi"><div class="lbl">Items selected</div><div class="val">${c.selected} / ${c.n}</div></div></div>
+  <div class="card"><h3>Status and actions</h3>
+   <div class="msg ${ready?'ok':'warn'}"><b>Readiness:</b> ${ready?'All lines are ready.':c.missing+' line(s) are not at the best price and need a remark.'}</div>
+   <div class="row2"><button class="btn go" id="mkPo" ${ready&&!S2S.po?'':'disabled'}>Create PO</button>
+   ${S2S.po?'<button class="btn ghost" id="resetPo">Reopen as draft</button>':''}
+   <span class="mut small">${S2S.po?'PO created from the selected suppliers.':'Pick a supplier per item. A pick above the best price needs a remark.'}</span></div></div>
+  <div><div class="pills" role="tablist">
+   ${[['cmp','Comparison'],['best','Best price summary'],['po','PO preview']].map(([k,l])=>`<button class="pill ${S2S.sub===k?'on':''}" data-sub="${k}">${l}</button>`).join('')}</div>`;
+  if(S2S.sub==='cmp'){
+   h+=`<div class="card"><h3>Comparison: suppliers under each item</h3>
+   <p class="sub">Lowest rate first. Click a row to select that supplier for the item.
+   <span class="tag best" style="margin:0">BEST</span> lowest rate <span class="tag sel">SELECTED</span> chosen supplier</p>
+   <div class="scroll"><table><thead><tr><th>Supplier</th><th>Payment terms</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Amount</th><th>vs best</th><th></th></tr></thead><tbody>`;
+   m.items.forEach(it=>{
+     h+=`<tr class="grp"><td colspan="7"><span class="badge">${it.id}</span>${it.name} <span class="mut small">${it.code} | ${it.qty} Nos | ${it.quotes.length} quote(s)</span></td></tr>`;
+     it.quotes.forEach((q,i)=>{
+       const b=it.quotes[0].rate,isSel=sel[it.id]===i,diff=(q.rate-b)/b*100;
+       h+=`<tr class="q ${i===0?'best':''} ${isSel?'sel':''}" data-it="${it.id}" data-i="${i}" tabindex="0">
+        <td><b>${q.s}</b><div class="mut small">${q.code}</div></td><td class="mut">${q.terms}</td><td class="num">${fmt2(it.qty)}</td>
+        <td class="num"><b>${fmt2(q.rate)}</b></td><td class="num">${fmt2(q.rate*it.qty)}</td>
+        <td>${q.rate===b?'<span class="pos">Lowest</span>':'<span class="neg">+'+diff.toFixed(1)+'%</span>'}</td>
+        <td>${i===0?'<span class="tag best">BEST</span>':''}${isSel?'<span class="tag sel">SELECTED</span>':''}${isSel&&q.rate>b?'<span class="tag nb">NOT BEST</span>':''}</td></tr>`;
+       if(isSel&&q.rate>b)h+=`<tr><td colspan="7" style="background:#FFFBF0"><input type="text" class="remark" data-rem="${it.id}" placeholder="Remark: why not the best price?" value="${(rem[it.id]||'').replace(/"/g,'&quot;')}" aria-label="Remark for item ${it.id}"></td></tr>`;
+     })});
+   h+=`</tbody></table></div>
+   <h3 style="margin-top:18px">Total if all items are bought from one supplier</h3><div class="scroll"><table><thead><tr><th>Supplier</th><th class="num">Items quoted</th><th class="num">Total</th><th></th></tr></thead><tbody>`;
+   const full=Object.entries(c.sup).filter(([,v])=>v.n===c.n).sort((a,b)=>a[1].t-b[1].t),minT=full.length?full[0][1].t:0;
+   Object.entries(c.sup).sort((a,b)=>b[1].n-a[1].n||a[1].t-b[1].t).forEach(([s,v])=>{
+     h+=`<tr><td><b>${s}</b></td><td class="num">${v.n} / ${c.n}</td><td class="num"><b>${fmt2(v.t)}</b></td><td>${v.n===c.n&&v.t===minT?'<span class="tag best" style="margin:0">CHEAPEST SINGLE SUPPLIER</span>':''}</td></tr>`});
+   h+=`</tbody></table></div></div>`;
+  }
+  if(S2S.sub==='best'){
+   h+=`<div class="card good"><h3>Best price summary</h3><p class="sub">Lowest quote per item and what a different pick costs.</p><div class="scroll"><table><thead><tr><th>Item</th><th>Best supplier</th><th class="num">Best amount</th><th>Selected supplier</th><th class="num">Selected amount</th><th class="num">Extra cost</th></tr></thead><tbody>`;
+   m.items.forEach(it=>{const b=it.quotes[0],s=it.quotes[sel[it.id]],ex=(s.rate-b.rate)*it.qty;
+    h+=`<tr><td>${it.id}. ${it.name}</td><td>${b.s}</td><td class="num">${fmt2(b.rate*it.qty)}</td><td>${s.s}</td><td class="num">${fmt2(s.rate*it.qty)}</td><td class="num ${ex>0?'neg':'pos'}">${ex>0?'+'+fmt2(ex):'0.00'}</td></tr>`});
+   h+=`</tbody></table></div></div>`;
+  }
+  if(S2S.sub==='po'){
+   if(!S2S.po)h+=`<div class="card"><h3>PO preview</h3><div class="msg warn">${ready?'Press Create PO to generate the purchase orders.':'Not ready: '+c.missing+' line(s) need a remark.'}</div></div>`;
+   else{const by={};m.items.forEach(it=>{const q=it.quotes[sel[it.id]];(by[q.s]=by[q.s]||[]).push({it,q})});
+    h+=Object.entries(by).map(([s,l],i)=>{const tot=l.reduce((a,x)=>a+x.q.rate*x.it.qty,0);
+     return `<div class="card good"><h3>PO-DEMO-${String(i+1).padStart(4,'0')} · ${s}</h3><p class="sub">Terms: ${l[0].q.terms}</p><div class="scroll"><table><thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Amount</th></tr></thead><tbody>${l.map(x=>`<tr><td>${x.it.name}</td><td class="num">${fmt2(x.it.qty)}</td><td class="num">${fmt2(x.q.rate)}</td><td class="num">${fmt2(x.q.rate*x.it.qty)}</td></tr>`).join('')}<tr><td colspan="3" class="num"><b>Total</b></td><td class="num"><b>${fmt2(tot)}</b></td></tr></tbody></table></div></div>`}).join('<div style="height:16px"></div>')}
+  }
+  h+=`</div></div>`;
+  $('#app').innerHTML=h;
+  $('#mrSel').onchange=e=>{S2S.mr=e.target.value;S2S.po=null;renderS2S()};
+  $$('[data-sub]').forEach(b=>b.onclick=()=>{S2S.sub=b.dataset.sub;renderS2S()});
+  $$('tr.q').forEach(r=>{const go=()=>{if(S2S.po)return;S2S.sel[mr][r.dataset.it]=+r.dataset.i;renderS2S()};r.onclick=go;r.onkeydown=e=>{if(e.key==='Enter')go()}});
+  $$('.remark').forEach(i=>{i.onclick=e=>e.stopPropagation();i.oninput=()=>{S2S.rem[mr][i.dataset.rem]=i.value;const cc=s2sCalc(mr),ok=cc.missing===0;$('#mkPo').disabled=!ok||!!S2S.po;const mg=$('.msg');mg.className='msg '+(ok?'ok':'warn');mg.innerHTML='<b>Readiness:</b> '+(ok?'All lines are ready.':cc.missing+' line(s) are not at the best price and need a remark.')}});
+  const mk=$('#mkPo');if(mk)mk.onclick=()=>{S2S.po=true;S2S.sub='po';renderS2S()};
+  const rs=$('#resetPo');if(rs)rs.onclick=()=>{S2S.po=null;S2S.sub='cmp';renderS2S()};
+}
+
+/* ================= 2. SALES OVERVIEW ================= */
+const SAL=(()=>{
+  const r=rng(7),reps=['Maya Collins','Daniel Ortiz','Priya Raman','Lucas Meyer','Hana Sato'],
+   mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'],
+   weight=[.40,.26,.14,.09,.06],extra=.05,
+   totals=[480,128,60,94,214,126,102,176,160,170,40].map(x=>x*1e6);
+  const data=mo.map((m,i)=>{const row={m:m+' 26'};reps.forEach((p,j)=>row[p]=totals[i]*weight[j]*(.85+r()*.3));row.Others=totals[i]*extra*(.8+r()*.4);return row});
+  const rev=[41,46,38,52,57,49].map(x=>x*1e6),pur=[39,41,36,47,50,44].map(x=>x*1e6);
+  return{reps,mo,data,rev,pur,rm:['May','Jun','Jul','Aug','Sep','Oct'],
+   regions:[['North Coast',640],['Harbor Zone',410],['Central',215],['Eastern Belt',150],['Highlands',82],['Islands',31],['Border Towns',14]].map(x=>[x[0],x[1]*1e6]),
+   cust:[['Blue Harbor Trading',405],['Summit Auto Group',257],['Orion Motors',173],['Redwood Imports',157],['Northgate Fleet',81],['Lakeview Dealers',72],['Granite Wholesale',27],['Pioneer Cars',24],['Maple Leaf Auto',18],['Starline Traders',12]].map(x=>[x[0],x[1]*1e6])}
+})();
+const SP={months:2,off:new Set()};
+const COL=['#1F6FE0','#7A52D8','#12A594','#F59E0B','#E5469A','#B4BFD8'];
+function ranked(list,fmtv){const mx=Math.max(...list.map(x=>x[1]));return list.map((x,i)=>`<div class="bar-row"><span class="rk">${i+1}</span><span>${x[0]}</span><div class="track"><div class="fill" style="width:${x[1]/mx*100}%"></div></div><span class="num"><b>${fmtv(x[1])}</b></span></div>`).join('')}
+function mini(vals,labels){const mx=Math.max(...vals);return `<div style="display:flex;gap:6px;align-items:flex-end;height:60px;margin-top:10px">${vals.map((v,i)=>`<div style="flex:1;text-align:center"><div title="${labels[i]}: ${M(v)}" style="height:${Math.max(4,v/mx*44)}px;background:linear-gradient(#6FA0FF,#BCD3FF);border-radius:4px 4px 0 0"></div><div class="mut" style="font-size:10.5px">${labels[i]}</div></div>`).join('')}</div>`}
+function renderSales(){
+  const n=SP.months,rev=SAL.rev.slice(-n).reduce((a,b)=>a+b,0),pur=SAL.pur.slice(-n).reduce((a,b)=>a+b,0),mg=(rev-pur)/rev*100;
+  const reps=SAL.reps.map(p=>[p,SAL.data.reduce((a,d)=>a+d[p],0)]).sort((a,b)=>b[1]-a[1]);
+  let h=`<div class="stack"><div class="card"><div class="hdr"><div><h3>Revenue and purchase performance</h3><p class="sub" style="margin:0">Synthetic figures in USD</p></div>
+   <div class="pills" style="margin:0">${[[2,'Last 2 months'],[6,'Last 6 months']].map(([k,l])=>`<button class="pill sm ${SP.months===k?'on':''}" data-m="${k}">${l}</button>`).join('')}</div></div></div>
+  <div class="grid k3">
+   <div class="card kpi"><div class="lbl">Revenue</div><div class="val">${M(rev)}</div><div class="hint">Last ${n} months</div>${mini(SAL.rev,SAL.rm)}</div>
+   <div class="card kpi"><div class="lbl">Purchase</div><div class="val">${M(pur)}</div><div class="hint">Last ${n} months</div>${mini(SAL.pur,SAL.rm)}</div>
+   <div class="card kpi good"><div class="lbl">Profit margin</div><div class="val ${mg<0?'b':'g'}">${mg.toFixed(1)}%</div><div class="hint">${mg<0?'Purchases exceed revenue':'Revenue exceeds purchases'}</div>${mini(SAL.rev.map((v,i)=>v-SAL.pur[i]),SAL.rm)}</div></div>
+  <div class="grid two"><div class="card"><h3>Salesperson performance</h3><p class="sub">Year to date</p>${ranked(reps,M)}</div>
+   <div class="card"><h3>Regional sales overview</h3><p class="sub">Year to date</p>${ranked(SAL.regions,M)}</div></div>
+  <div class="card"><h3>Monthly salesperson performance</h3><p class="sub">Stacked by salesperson. Click a legend item to hide it.</p><div id="stk"></div><div class="legend" id="lg"></div></div>
+  <div class="card"><h3>Customer sales snapshot (top 10)</h3>${ranked(SAL.cust,M)}</div></div>`;
+  $('#app').innerHTML=h;
+  $$('[data-m]').forEach(b=>b.onclick=()=>{SP.months=+b.dataset.m;renderSales()});
+  drawStack();
+}
+function drawStack(){
+  const keys=[...SAL.reps,'Others'],on=keys.filter(k=>!SP.off.has(k)),W=1000,H=300,pl=10,pb=28,pt=24,bw=46,data=SAL.data;
+  const tot=d=>on.reduce((a,k)=>a+d[k],0),mx=Math.max(...data.map(tot),1),step=(W-pl*2)/data.length;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Stacked monthly sales by salesperson">`;
+  data.forEach((d,i)=>{let y=H-pb;const x=pl+i*step+(step-bw)/2;
+    keys.forEach((k,j)=>{if(SP.off.has(k))return;const hh=d[k]/mx*(H-pb-pt);y-=hh;s+=`<rect data-k="${k}" data-i="${i}" x="${x}" y="${y}" width="${bw}" height="${Math.max(hh,.5)}" fill="${COL[j]}" rx="2"/>`});
+    s+=`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="12" fill="#12203D">${M(tot(d))}</text><text x="${x+bw/2}" y="${H-8}" text-anchor="middle" font-size="12" fill="#667189">${d.m}</text>`});
+  s+='</svg>';$('#stk').innerHTML=s;
+  $$('#stk rect').forEach(r=>tip(r,`<b>${r.dataset.k}</b><br>${data[r.dataset.i].m}: ${M(data[r.dataset.i][r.dataset.k])}`));
+  $('#lg').innerHTML=keys.map((k,j)=>`<button class="${SP.off.has(k)?'off':''}" data-k="${k}"><span class="sw" style="background:${COL[j]}"></span>${k}</button>`).join('');
+  $$('#lg button').forEach(b=>b.onclick=()=>{SP.off.has(b.dataset.k)?SP.off.delete(b.dataset.k):SP.off.add(b.dataset.k);drawStack()});
+}
+
+/* ================= 3. TRADING STATISTICS ================= */
+const TODAY=new Date('2026-11-09T00:00:00');
+const iso=d=>d.toISOString().slice(0,10);
+const DIV=['North Division','Harbor Division','Export Division'];
+const MODELS=[['Terra SUV 3.5 VX',58000],['Terra SUV 4.0 GX',66000],['Vista Hatch 1.5 LX',19500],['Nova Sedan 2.0 SE',27500],['Ridge Pickup 2.8 D-Cab',43000],['Summit 4x4 3.5 GR',72000],['Metro Van 2.5 Cargo',31000],['Flare Coupe 3.0 Sport',54000]];
+const CUSTS=['Blue Harbor Trading','Summit Auto Group','Orion Motors','Redwood Imports','Northgate Fleet','Lakeview Dealers','Granite Wholesale','Pioneer Cars','Maple Leaf Auto','Starline Traders','Cedar Motors','Falcon Wheels'];
+const INV=(()=>{const r=rng(99),out=[];
+  for(let i=0;i<640;i++){const d=new Date(TODAY);d.setDate(d.getDate()-Math.floor(r()*365));
+   const mi=Math.floor(Math.pow(r(),1.4)*MODELS.length),ci=Math.floor(Math.pow(r(),1.8)*CUSTS.length),dv=Math.floor(r()*3);
+   const sale=MODELS[mi][1]*(.94+r()*.12),cost=sale*(.80+r()*.12);
+   out.push({date:iso(d),div:dv,cust:CUSTS[ci],model:MODELS[mi][0],ch:'DEMO'+String(100000+Math.floor(r()*899999)),sale,cost})}
+  return out})();
+const ST={from:'2026-11-01',to:'2026-11-09',divs:new Set([0,1,2]),open:new Set(),model:null,preset:'This month'};
+const PRE={'This month':()=>[new Date('2026-11-01'),TODAY],'Last month':()=>[new Date('2026-10-01'),new Date('2026-10-31')],'Last 30 days':()=>{const d=new Date(TODAY);d.setDate(d.getDate()-29);return[d,TODAY]},'This year':()=>[new Date('2026-01-01'),TODAY],'Last 12 months':()=>{const d=new Date(TODAY);d.setFullYear(d.getFullYear()-1);d.setDate(d.getDate()+1);return[d,TODAY]}};
+function filt(){return INV.filter(x=>x.date>=ST.from&&x.date<=ST.to&&ST.divs.has(x.div))}
+function groupBy(rows,key){const g={};rows.forEach(x=>{(g[x[key]]=g[x[key]]||[]).push(x)});return g}
+function renderStats(){
+  const rows=filt(),sales=rows.reduce((a,x)=>a+x.sale,0),cost=rows.reduce((a,x)=>a+x.cost,0),pr=sales-cost;
+  const byC=Object.entries(groupBy(rows,'cust')).map(([c,l])=>({c,l,s:l.reduce((a,x)=>a+x.sale,0)})).sort((a,b)=>b.s-a.s).slice(0,10);
+  let h=`<div class="stack"><div class="card"><div class="row2"><label class="mut small">From <input type="date" id="df" value="${ST.from}"></label><label class="mut small">To <input type="date" id="dt" value="${ST.to}"></label><button class="btn" id="ap">Apply dates</button></div>
+   <div class="mut small" style="margin:10px 0 4px;font-weight:600;letter-spacing:.5px">DIVISIONS</div><div class="pills" style="margin-top:0">${DIV.map((d,i)=>`<button class="pill sm ${ST.divs.has(i)?'on':''}" data-dv="${i}">${ST.divs.has(i)?'✓ ':''}${d}</button>`).join('')}</div>
+   <div class="pills">${Object.keys(PRE).map(k=>`<button class="pill sm ${ST.preset===k?'on':''}" data-pr="${k}">${k}</button>`).join('')}</div>
+   <div class="mut small">Showing ${ST.from} to ${ST.to} · ${rows.length} invoices · ${[...ST.divs].map(i=>DIV[i]).join(', ')||'no division selected'}</div></div>
+  <div class="grid k4">
+   <div class="card kpi"><div class="lbl">Net sales (USD)</div><div class="val">${fmt2(sales)}</div><div class="hint">${ST.from} to ${ST.to}</div></div>
+   <div class="card kpi"><div class="lbl">Sold units</div><div class="val">${rows.length}</div><div class="hint">Vehicles sold</div></div>
+   <div class="card kpi"><div class="lbl">Purchase cost</div><div class="val" style="color:#7A52D8">${fmt2(cost)}</div><div class="hint">Cost of the vehicles sold</div></div>
+   <div class="card kpi good"><div class="lbl">Profit</div><div class="val g">${fmt2(pr)}</div><div class="hint">${rows.length} units · ${sales?(pr/sales*100).toFixed(2):'0.00'}% margin</div></div></div>
+  <div class="card"><div class="hdr"><div><h3>Customer model statistics: top models by quantity</h3><p class="sub">Top 10 customers by net sales. Click the arrow to open a customer, click a model for its detail.</p></div><button class="btn" id="csv">Export CSV</button></div>
+   <div class="scroll"><table><thead><tr><th style="width:40px"></th><th>Customer / model</th><th class="num">Vehicles</th><th class="num">Lowest rate</th><th class="num">Highest rate</th><th class="num">Sales</th></tr></thead><tbody>`;
+  if(!byC.length)h+=`<tr><td colspan="6" class="mut">No sales in this selection. Widen the dates or divisions.</td></tr>`;
+  byC.forEach(c=>{const o=ST.open.has(c.c);
+   h+=`<tr class="grp"><td><button class="exp" data-c="${c.c}" aria-expanded="${o}" aria-label="Open ${c.c}">${o?'▾':'▸'}</button></td><td>${c.c}</td><td class="num">${c.l.length}</td><td></td><td></td><td class="num">${fmt2(c.s)}</td></tr>`;
+   if(o){const gm=Object.entries(groupBy(c.l,'model')).map(([m,l])=>({m,l,s:l.reduce((a,x)=>a+x.sale,0)})).sort((a,b)=>b.l.length-a.l.length||b.s-a.s).slice(0,5);
+    gm.forEach(g=>{const rt=g.l.map(x=>x.sale);h+=`<tr class="q" data-m="${g.m}"><td></td><td><button class="link">${g.m}</button></td><td class="num">${g.l.length}</td><td class="num">${fmt2(Math.min(...rt))}</td><td class="num">${fmt2(Math.max(...rt))}</td><td class="num">${fmt2(g.s)}</td></tr>`})}});
+  h+=`</tbody></table></div></div>`;
+  if(ST.model){const l=rows.filter(x=>x.model===ST.model);
+   if(l.length){const rt=l.map(x=>x.sale),lo=Math.min(...rt),hi=Math.max(...rt),sl=l.reduce((a,x)=>a+x.sale,0),cs=l.reduce((a,x)=>a+x.cost,0),mx=Math.max(hi,1);
+    h+=`<div class="card"><div class="hdr"><div><h3>Selected model: ${ST.model}</h3><p class="sub">Matched profit ${fmt2(sl-cs)}; margin ${((sl-cs)/sl*100).toFixed(2)}%; ${l.length} chassis.</p></div><button class="btn ghost" id="clr">Clear</button></div>
+    <div class="bar-row" style="grid-template-columns:150px 1fr 110px"><span>Lowest sale rate</span><div class="track"><div class="fill" style="width:${lo/mx*100}%"></div></div><span class="num"><b>${fmt2(lo)}</b></span></div>
+    <div class="bar-row" style="grid-template-columns:150px 1fr 110px"><span>Highest sale rate</span><div class="track"><div class="fill" style="width:${hi/mx*100}%"></div></div><span class="num"><b>${fmt2(hi)}</b></span></div>
+    <div class="scroll"><table><thead><tr><th>Chassis</th><th>Customer</th><th>Date</th><th class="num">Sale</th><th class="num">Cost</th><th class="num">Margin</th></tr></thead><tbody>${l.slice(0,10).map(x=>`<tr><td>${x.ch}</td><td>${x.cust}</td><td>${x.date}</td><td class="num">${fmt2(x.sale)}</td><td class="num">${fmt2(x.cost)}</td><td class="num pos">${((x.sale-x.cost)/x.sale*100).toFixed(1)}%</td></tr>`).join('')}</tbody></table></div><p class="sub" style="margin-top:8px">First 10 chassis shown.</p></div>`}
+   else h+=`<div class="card"><div class="msg warn">${ST.model} has no sales in this selection. <button class="link" id="clr">Clear</button></div></div>`}
+  h+=`</div>`;$('#app').innerHTML=h;
+  $('#ap').onclick=()=>{const f=$('#df').value,t=$('#dt').value;if(f&&t&&f<=t){ST.from=f;ST.to=t;ST.preset=''}renderStats()};
+  $$('[data-pr]').forEach(b=>b.onclick=()=>{const[a,z]=PRE[b.dataset.pr]();ST.from=iso(a);ST.to=iso(z);ST.preset=b.dataset.pr;renderStats()});
+  $$('[data-dv]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dv;ST.divs.has(i)?ST.divs.delete(i):ST.divs.add(i);renderStats()});
+  $$('.exp').forEach(b=>b.onclick=()=>{ST.open.has(b.dataset.c)?ST.open.delete(b.dataset.c):ST.open.add(b.dataset.c);renderStats()});
+  $$('tr.q[data-m]').forEach(r=>r.onclick=()=>{ST.model=r.dataset.m;renderStats();$('#clr')&&$('#clr').scrollIntoView({block:'center'})});
+  const c=$('#clr');if(c)c.onclick=()=>{ST.model=null;renderStats()};
+  $('#csv').onclick=()=>download('customer-sales-demo.csv',[['Customer','Vehicles','Net sales'],...byC.map(x=>[x.c,x.l.length,x.s.toFixed(2)])]);
+}
+
+/* ---------- router ---------- */
+const VIEWS={s2s:renderS2S,sales:renderSales,stats:renderStats};
+function show(t){$$('#tabs button').forEach(b=>{b.classList.toggle('on',b.dataset.t===t);b.setAttribute('aria-selected',b.dataset.t===t)});VIEWS[t]();try{history.replaceState(null,'','#'+t)}catch(e){}}
+$$('#tabs button').forEach(b=>b.onclick=()=>show(b.dataset.t));
+show(VIEWS[location.hash.slice(1)]?location.hash.slice(1):'s2s');
+</script>
+</body>
+</html>
